@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="description" content="{% block meta_description %}Share your favorite moments with the world. A beautiful photo gallery to showcase your photography.{% endblock %}">
+    <meta name="keywords" content="photo gallery, photography, share photos, image hosting">
+    <meta name="author" content="Photo Gallery">
+    <meta name="theme-color" content="#4e54c8">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'img/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'img/favicon-16x16.png' %}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'img/apple-touch-icon.png' %}">
+    <link rel="manifest" href="{% static 'site.webmanifest' %}">
+    
+    <!-- Preload Critical Resources -->
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="{% static 'css/style.css' %}" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    
+    <!-- Fallback for non-JS -->
+    <noscript>
+        <!-- Preload critical CSS -->
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"></noscript>
+    
+    <!-- Preload Font Awesome -->
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
+    
+    <!-- Custom CSS -->
+    <link rel="preload" href="{% static 'css/style.css' %}" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="{% static 'css/style.css' %}"></noscript>
+    
+    <!-- Add to homescreen for Chrome on Android -->
+    <meta name="theme-color" content="#1a237e">
+    <meta name="msapplication-navbutton-color" content="#1a237e">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    </noscript>
+    
+    <!-- Preconnect to external domains -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Open Graph / Social Media Meta Tags -->
+    <meta property="og:title" content="{% block og_title %}Photo Gallery - Share Your World{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}Share your favorite moments with the world. A beautiful photo gallery to showcase your photography.{% endblock %}">
+    <meta property="og:image" content="{% block og_image %}{% static 'img/og-image.jpg' %}{% endblock %}">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:type" content="website">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{% block twitter_title %}Photo Gallery - Share Your World{% endblock %}">
+    <meta name="twitter:description" content="{% block twitter_description %}Share your favorite moments with the world. A beautiful photo gallery to showcase your photography.{% endblock %}">
+    <meta name="twitter:image" content="{% block twitter_image %}{% static 'img/twitter-card.jpg' %}{% endblock %}">
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="d-flex flex-column min-vh-100">
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top" style="padding: 0.5rem;">
+        <div class="container-fluid px-0">
+            <a class="navbar-brand d-flex align-items-center" href="{% url 'gallery:home' %}">
+                <i class="fas fa-camera-retro me-2 d-none d-sm-inline"></i>
+                <span class="d-none d-sm-inline">Photo Gallery</span>
+                <i class="fas fa-camera-retro d-sm-none"></i>
+            </a>
+            
+            <!-- Mobile Toggle -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <!-- Desktop Menu -->
+            <div class="collapse navbar-collapse" id="mainNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}" 
+                           href="{% url 'gallery:home' %}">
+                            <i class="fas fa-home d-lg-none me-2"></i>Home
+                        </a>
+                    </li>
+                    {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'upload' %}active{% endif %}" 
+                           href="{% url 'gallery:upload' %}">
+                            <i class="fas fa-cloud-upload-alt d-lg-none me-2"></i>Upload
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'profile' %}active{% endif %}" 
+                           href="{% url 'users:profile' %}">
+                            <i class="fas fa-user d-lg-none me-2"></i>My Profile
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+                
+                <!-- Right Side Navigation -->
+                <ul class="navbar-nav ms-auto">
+                    {% if user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            {% if user.profile.image %}
+                                <img src="{{ user.profile.image.url }}" class="rounded-circle me-2" width="32" height="32" alt="{{ user.username }}">
+                            {% else %}
+                                <div class="avatar-placeholder me-2">
+                                    {{ user.username|first|upper }}
+                                </div>
+                            {% endif %}
+                            <span class="d-none d-lg-inline">{{ user.username }}</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" href="{% url 'users:profile' %}"><i class="fas fa-user-circle me-2"></i>My Profile</a></li>
+                            <li><a class="dropdown-item" href="{% url 'gallery:upload' %}"><i class="fas fa-upload me-2"></i>Upload Photo</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="{% url 'users:logout' %}"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                        </ul>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-outline-light me-2 px-3" href="{% url 'users:login' %}">
+                            <i class="fas fa-sign-in-alt d-lg-none me-2"></i>Login
+                        </a>
+                    </li>
+                    <li class="nav-item d-none d-lg-block">
+                        <a class="nav-link btn btn-primary px-4" href="{% url 'users:register' %}">
+                            Sign Up
+                        </a>
+                    </li>
+                    <li class="nav-item d-lg-none">
+                        <a class="nav-link" href="{% url 'users:register' %}">
+                            <i class="fas fa-user-plus me-2"></i>Create Account
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Mobile Offcanvas Menu -->
+    <div class="offcanvas offcanvas-end bg-dark text-white" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+        <div class="offcanvas-header border-bottom border-secondary">
+            <h5 class="offcanvas-title" id="offcanvasNavbarLabel">
+                <i class="fas fa-bars me-2"></i>Menu
+            </h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}" 
+                       href="{% url 'gallery:home' %}">
+                        <i class="fas fa-home me-2"></i>Home
+                    </a>
+                </li>
+                {% if user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'upload' %}active{% endif %}" 
+                       href="{% url 'gallery:upload' %}">
+                        <i class="fas fa-cloud-upload-alt me-2"></i>Upload Photo
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'profile' %}active{% endif %}" 
+                       href="{% url 'users:profile' %}">
+                        <i class="fas fa-user me-2"></i>My Profile
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-danger" href="{% url 'users:logout' %}">
+                        <i class="fas fa-sign-out-alt me-2"></i>Logout
+                    </a>
+                </li>
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'users:login' %}">
+                        <i class="fas fa-sign-in-alt me-2"></i>Login
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'users:register' %}">
+                        <i class="fas fa-user-plus me-2"></i>Create Account
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+            
+            {% if user.is_authenticated %}
+            <div class="mt-4 pt-3 border-top border-secondary">
+                <div class="d-flex align-items-center">
+                    {% if user.profile.image %}
+                        <img src="{{ user.profile.image.url }}" class="rounded-circle me-3" width="48" height="48" alt="{{ user.username }}">
+                    {% else %}
+                        <div class="avatar-placeholder-large me-3">
+                            {{ user.username|first|upper }}
+                        </div>
+                    {% endif %}
+                    <div>
+                        <div class="fw-bold">{{ user.username }}</div>
+                        <small class="text-muted">{{ user.email }}</small>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Main Content Wrapper -->
+    <main class="flex-grow-1 pt-5 mt-4">
+        <!-- Messages -->
+        <div class="container">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm mb-4" role="alert">
+                        <div class="d-flex align-items-center">
+                            {% if message.tags == 'success' %}
+                                <i class="fas fa-check-circle me-2"></i>
+                            {% elif message.tags == 'error' %}
+                                <i class="fas fa-exclamation-circle me-2"></i>
+                            {% elif message.tags == 'warning' %}
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                            {% elif message.tags == 'info' %}
+                                <i class="fas fa-info-circle me-2"></i>
+                            {% endif %}
+                            <div>{{ message }}</div>
+                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        
+        <!-- Page Content -->
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Back to Top Button -->
+    <button type="button" class="btn btn-primary btn-floating btn-lg rounded-circle" id="btn-back-to-top" aria-label="Back to top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-5 mt-5">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="fas fa-camera-retro fa-2x text-primary me-2"></i>
+                        <h3 class="h5 mb-0">Photo Gallery</h3>
+                    </div>
+                    <p class="text-muted mb-4">Capture, share, and explore beautiful moments from around the world with our community of passionate photographers.</p>
+                    <div class="d-flex gap-3 mb-4">
+                        <a href="#" class="text-white text-decoration-none"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-white text-decoration-none"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-white text-decoration-none"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-white text-decoration-none"><i class="fab fa-pinterest"></i></a>
+                        <a href="#" class="text-white text-decoration-none"><i class="fab fa-flickr"></i></a>
+                    </div>
+                </div>
+                
+                <div class="col-6 col-md-4 col-lg-2">
+                    <h5 class="h6 mb-3 text-uppercase text-primary">Explore</h5>
+                    <ul class="nav flex-column">
+                        <li class="nav-item mb-2"><a href="{% url 'gallery:home' %}" class="nav-link p-0 text-muted">Home</a></li>
+                        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Popular Photos</a></li>
+                        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Categories</a></li>
+                        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Photographers</a></li>
+                        <li class="nav-item"><a href="#" class="nav-link p-0 text-muted">Contests</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-6 col-md-4 col-lg-2">
+                    <h5 class="h6 mb-3 text-uppercase text-primary">Community</h5>
+                    <ul class="nav flex-column">
+                        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Guidelines</a></li>
+                        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Discussions</a></li>
+                        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Leaderboard</a></li>
+                        <li class="nav-item"><a href="#" class="nav-link p-0 text-muted">Blog</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-12 col-md-4 col-lg-4">
+                    <h5 class="h6 mb-3 text-uppercase text-primary">Newsletter</h5>
+                    <p class="text-muted mb-3">Subscribe to our newsletter for the latest updates and featured photos.</p>
+                    <form class="mb-3">
+                        <div class="input-group">
+                            <input type="email" class="form-control bg-dark text-white border-secondary" placeholder="Your email" aria-label="Your email" required>
+                            <button class="btn btn-primary" type="submit">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </form>
+                    <small class="text-muted">We'll never share your email with anyone else.</small>
+                </div>
+            </div>
+            
+            <hr class="my-4 border-secondary">
+            
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center">
+                <div class="mb-3 mb-md-0">
+                    <p class="mb-0 text-muted">&copy; {% now "Y" %} Photo Gallery. All rights reserved.</p>
+                </div>
+                <div class="d-flex">
+                    <a href="#" class="text-decoration-none text-muted me-3">Terms of Service</a>
+                    <a href="#" class="text-decoration-none text-muted me-3">Privacy Policy</a>
+                    <a href="#" class="text-decoration-none text-muted">Cookies</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <!-- Load scripts with defer -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
+    
+    <!-- Touch detection for :hover states on mobile -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add touch detection for hover states
+        function hasTouch() {
+            return 'ontouchstart' in document.documentElement ||
+                   navigator.maxTouchPoints > 0 ||
+                   navigator.msMaxTouchPoints > 0;
+        }
+        
+        if (hasTouch()) {
+            document.body.classList.add('touch-device');
+        } else {
+            document.body.classList.add('no-touch-device');
+        }
+        
+        // Close mobile menu when clicking a link
+        const navLinks = document.querySelectorAll('.nav-link');
+        const menuToggle = document.getElementById('navbarNav');
+        const bsCollapse = bootstrap.Collapse.getInstance(menuToggle) || new bootstrap.Collapse(menuToggle, {toggle: false});
+        
+        navLinks.forEach(l => {
+            l.addEventListener('click', () => {
+                if (menuToggle.classList.contains('show')) {
+                    bsCollapse.toggle();
+                }
+            });
+        });
+    });
+    </script>
+    
+    <!-- Custom JS -->
+    <script src="{% static 'js/main.js' %}" defer></script>
+    
+    {% block extra_js %}{% endblock %}
+    
+    <script>
+        // Back to top button and navbar scroll effect
+        document.addEventListener('DOMContentLoaded', function() {
+            const backToTopButton = document.getElementById('btn-back-to-top');
+            const navbar = document.querySelector('.navbar');
+            
+            // Show/hide back to top button and update navbar on scroll
+            function handleScroll() {
+                if (window.scrollY > 100) {
+                    backToTopButton.classList.add('show');
+                    navbar.classList.add('scrolled');
+                } else {
+                    backToTopButton.classList.remove('show');
+                    navbar.classList.remove('scrolled');
+                }
+            }
+            
+            // Smooth scroll to top
+            backToTopButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+            
+            // Initialize tooltips
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl, {
+                    trigger: 'hover focus'
+                });
+            });
+            
+            // Add scroll event listener
+            window.addEventListener('scroll', handleScroll, { passive: true });
+            
+            // Run once on load
+            handleScroll();
+            
+            // Add loading state to buttons with loading class
+            document.querySelectorAll('.btn-loading').forEach(button => {
+                button.addEventListener('click', function() {
+                    this.disabled = true;
+                    this.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Loading...';
+                });
+            });
+            
+            // Initialize popovers
+            var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+            var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+                return new bootstrap.Popover(popoverTriggerEl);
+            });
+        });
+        
+        // Service Worker Registration for PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('{% static "js/sw.js" %}')
+                    .then(function(registration) {
+                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                    })
+                    .catch(function(error) {
+                        console.log('ServiceWorker registration failed: ', error);
+                    });
+                
+                // Close offcanvas menu when clicking on a link
+                const offcanvasElement = document.getElementById('offcanvasNavbar');
+                if (offcanvasElement) {
+                    const bsOffcanvas = new bootstrap.Offcanvas(offcanvasElement);
+                    const offcanvasLinks = offcanvasElement.querySelectorAll('a.nav-link');
+                    offcanvasLinks.forEach(link => {
+                        link.addEventListener('click', function() {
+                            bsOffcanvas.hide();
+                        });
+                    });
+                }
+            });
+        }
+    </script>
+</body>
+</html>

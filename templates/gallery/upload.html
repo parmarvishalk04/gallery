@@ -1,0 +1,57 @@
+{% extends "gallery/base_gallery.html" %}
+{% load crispy_forms_tags %}
+
+{% block gallery_content %}
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">Upload Photo</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST" enctype="multipart/form-data" id="upload-form">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        <div id="image-preview" class="text-center mb-3" style="display: none;"></div>
+                        <div class="form-group mt-4">
+                            <button type="submit" class="btn btn-primary">Upload</button>
+                            <a href="{% url 'gallery:home' %}" class="btn btn-outline-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Image preview functionality
+        const imageInput = document.getElementById('id_image');
+        const imagePreview = document.getElementById('image-preview');
+        
+        if (imageInput && imagePreview) {
+            imageInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        imagePreview.innerHTML = `<img src="${e.target.result}" class="img-fluid rounded" style="max-height: 300px;">`;
+                        imagePreview.style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
+        // Form submission
+        const form = document.getElementById('upload-form');
+        if (form) {
+            form.addEventListener('submit', function() {
+                showFormLoading('upload-form', 'Uploading...');
+            });
+        }
+    });
+</script>
+{% endblock %}

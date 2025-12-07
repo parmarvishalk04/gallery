@@ -1,0 +1,57 @@
+{% extends "gallery/base_gallery.html" %}
+
+{% block gallery_content %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'gallery:home' %}">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Photo Details</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <img src="{{ photo.image.url }}" class="card-img-top" alt="{{ photo.title }}">
+                <div class="card-body">
+                    <h2 class="card-title">{{ photo.title }}</h2>
+                    <p class="text-muted">Uploaded by {{ photo.user.username }} on {{ photo.date_posted|date:"F d, Y" }}</p>
+                    
+                    {% if photo.description %}
+                        <div class="card-text mb-4">
+                            <h5>Description:</h5>
+                            <p>{{ photo.description|linebreaks }}</p>
+                        </div>
+                    {% endif %}
+
+                    {% if user == photo.user %}
+                        <div class="btn-group" role="group">
+                            <a href="{% url 'gallery:delete_photo' photo.id %}" class="btn btn-outline-danger btn-delete">
+                                <i class="fas fa-trash"></i> Delete
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Confirm before deleting
+    document.addEventListener('DOMContentLoaded', function() {
+        const deleteButtons = document.querySelectorAll('.btn-delete');
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                if (!confirm('Are you sure you want to delete this photo? This action cannot be undone.')) {
+                    e.preventDefault();
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}
