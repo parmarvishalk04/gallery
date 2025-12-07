@@ -2,10 +2,17 @@ services:
   - type: web
     name: gallery-app
     env: python
-    buildCommand: "pip install -r requirements.txt && python manage.py migrate && python manage.py collectstatic --noinput"
-    startCommand: "gunicorn config.wsgi:application"
+    python:
+      version: 3.10.0
+    buildCommand: |
+      pip install -r requirements.txt
+      python manage.py migrate
+      python manage.py collectstatic --noinput
+    startCommand: gunicorn config.wsgi:application
     envVars:
       - key: PYTHON_VERSION
+        value: 3.10.0
+      - key: PYTHON_FULL_VERSION
         value: 3.10.0
       - key: DEBUG
         value: "False"
