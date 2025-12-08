@@ -25,7 +25,7 @@ SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
 
 # Allowed hosts
-ALLOWED_HOSTS = ['vishaaal.pythonanywhere.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['vishaaal.pythonanywhere.com', 'localhost', '127.0.0.1', '.pythonanywhere.com']
 
 # Application definition
 INSTALLED_APPS = [
