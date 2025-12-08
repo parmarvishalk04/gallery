@@ -187,18 +187,35 @@
         {% else %}
             <div class="text-center py-5">
                 <div class="feature-icon text-primary mb-3">
-                    <i class="fas fa-camera"></i>
+                    <i class="fas {% if user.is_authenticated %}fa-images{% else %}fa-lock{% endif %}"></i>
                 </div>
-                <h3 class="h4 mb-3">No Photos Yet</h3>
-                <p class="text-muted mb-4">Be the first to share your photos with the community!</p>
+                <h3 class="h4 mb-3">
+                    {% if user.is_authenticated %}
+                        You haven't uploaded any photos yet!
+                    {% else %}
+                        Welcome to Your Personal Gallery
+                    {% endif %}
+                </h3>
+                <p class="text-muted mb-4">
+                    {% if user.is_authenticated %}
+                        Start by uploading your first photo to your personal collection.
+                    {% else %}
+                        Please log in to view and manage your personal photo collection.
+                    {% endif %}
+                </p>
                 {% if user.is_authenticated %}
                     <a href="{% url 'gallery:upload' %}" class="btn btn-primary">
                         <i class="fas fa-upload me-2"></i>Upload Your First Photo
                     </a>
                 {% else %}
-                    <a href="{% url 'users:register' %}" class="btn btn-primary">
-                        <i class="fas fa-user-plus me-2"></i>Join Now
-                    </a>
+                    <div class="d-flex justify-content-center gap-3">
+                        <a href="{% url 'users:login' %}" class="btn btn-primary">
+                            <i class="fas fa-sign-in-alt me-2"></i>Log In
+                        </a>
+                        <a href="{% url 'users:register' %}" class="btn btn-outline-primary">
+                            <i class="fas fa-user-plus me-2"></i>Sign Up
+                        </a>
+                    </div>
                 {% endif %}
             </div>
         {% endif %}

@@ -25,13 +25,7 @@ SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
 
 # Allowed hosts
-ALLOWED_HOSTS = [
-    'vishaaal.pythonanywhere.com',
-    '.pythonanywhere.com',
-    '127.0.0.1',
-    'localhost',
-    '.onrender.com'  # Allow Render's domain
-]
+ALLOWED_HOSTS = ['vishaaal.pythonanywhere.com', 'localhost', '127.0.0.1']
 
 # Application definition
 INSTALLED_APPS = [
