@@ -125,9 +125,14 @@ LOGIN_REDIRECT_URL = 'gallery:home'
 LOGIN_URL = 'users:login'
 LOGOUT_REDIRECT_URL = 'gallery:home'
 
-# Email settings (configure these in production)
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' if DEBUG else 'django.core.mail.backends.smtp.EmailBackend'
-DEFAULT_FROM_EMAIL = 'noreply@yourdomain.com'
+# Email settings
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  # For Gmail
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'your-email@gmail.com'  # Your Gmail address
+EMAIL_HOST_PASSWORD = 'your-app-password'  # Generate an App Password if 2FA is enabled
+DEFAULT_FROM_EMAIL = 'your-email@gmail.com'  # Same as EMAIL_HOST_USER
 
 # Logging
 LOGGING = {
