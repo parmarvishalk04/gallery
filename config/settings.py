@@ -126,15 +126,14 @@ LOGIN_URL = 'users:login'
 LOGOUT_REDIRECT_URL = 'gallery:home'
 
 # Email settings
-# Email settings
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'parmarvishalk04@gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'parmarvishalk04@gmail.com'  # Replace with your email
-EMAIL_HOST_PASSWORD = 'A9f#2Lm!xQ7zR4tP'  # Replace with app password
-DEFAULT_FROM_EMAIL = 'parmarvishalk04@gmail.com'  # Same as EMAIL_HOST_USER
-SERVER_EMAIL = 'parmarvishalk04@gmail.com'  # For error notifications
+EMAIL_HOST = os.getenv('EMAIL_HOST')
+EMAIL_PORT = os.getenv('EMAIL_PORT')
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS') == 'True'
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')
+SERVER_EMAIL = os.getenv('SERVER_EMAIL')
 
 # Logging
 LOGGING = {
